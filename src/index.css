@@ -1,0 +1,12 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #1d2330;
+  color: white;
+  font-family: sans-serif;
+  overflow: hidden;
+}
