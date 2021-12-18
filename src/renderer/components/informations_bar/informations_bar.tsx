@@ -72,7 +72,7 @@ export const InformationsBar = (props: InformationsBarProps) => {
   const { open, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
-    accept: [".anim"],
+    accept: [".anim", ".mp3"],
   });
 
   return (

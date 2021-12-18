@@ -5,6 +5,7 @@ import { InformationsBar } from "./components/informations_bar/informations_bar"
 import { Visualizer } from "./components/visualizer/visualizer";
 import { Animation, AnimationView } from "icicles-animation";
 import { DataBar } from "./components/data_bar/data_bar";
+import { MusicAnimation } from "./utils/music_animation";
 
 const Container = styled.div`
   position: absolute;
@@ -75,10 +76,17 @@ function App() {
   const [activeAnimation, setActiveAnimation] = useState<Animation>();
 
   const addFile = useCallback(async (file: File) => {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const animation = await Animation.decode(buffer);
-    setActiveAnimation(animation);
+    if (file.name.includes("mp3")) {
+      console.log("MP3");
+      const musicAnimation = new MusicAnimation(file);
+      await musicAnimation.load();
+      setActiveAnimation(musicAnimation);
+    } else {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const animation = await Animation.decode(buffer);
+      setActiveAnimation(animation);
+    }
   }, []);
 
   const player = usePlayer({

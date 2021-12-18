@@ -33,7 +33,7 @@ export const Dropzone = ({ addFile }: DropzoneProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     maxFiles: 1,
-    accept: [".anim"],
+    accept: [".anim",".mp3"],
   });
 
   return (
