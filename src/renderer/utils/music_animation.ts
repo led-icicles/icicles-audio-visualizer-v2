@@ -18,17 +18,24 @@ export class MusicAnimation extends Animation {
       name: file.name,
       xCount: 20,
       yCount: 30,
+      radioPanelsCount: 2,
     });
   }
 
   protected readonly audio = document.createElement("audio");
   protected analyser: AnalyserNode;
+  protected analyser2: AnalyserNode;
 
   public async load() {
     // var audio = document.getElementById("audio") as HTMLAudioElement;
 
     var context = new AudioContext();
     const mediaSource = context.createMediaElementSource(this.audio);
+
+    this.analyser2 = context.createAnalyser();
+    mediaSource.connect(this.analyser2);
+    this.analyser2.fftSize = 256;
+    this.analyser2.smoothingTimeConstant = 0.4;
 
     this.analyser = context.createAnalyser();
     mediaSource.connect(this.analyser);
@@ -41,14 +48,7 @@ export class MusicAnimation extends Animation {
 
   protected startTime = Date.now();
 
-  protected icicles = new Icicles(
-    new Animation({
-      name: "1",
-      xCount: 20,
-      yCount: 30,
-      loopsCount: 0,
-    })
-  );
+  protected icicles = new Icicles(this);
 
   protected config = {
     // analyzer config
@@ -126,11 +126,17 @@ export class MusicAnimation extends Animation {
       // radio panels indexes starts from 1 (0 is a broadcast channel)
       .map((_, index) => new RadioPanelView(index + 1, new Color()));
 
-    var bufferLength = this.analyser.frequencyBinCount;
-    var dataArray = new Uint8Array(bufferLength);
+    const basBinCounts = this.analyser.frequencyBinCount;
+    const basBins = new Uint8Array(basBinCounts);
+    const audioBinCounts = this.analyser2.frequencyBinCount;
+    const audioBins = new Uint8Array(audioBinCounts);
 
     this.audio.src = URL.createObjectURL(this.file);
     this.audio.load();
+
+    /// blank frame for player setup (audio pause).
+    yield new AnimationView(intialFrame.copy(), radioPanels);
+
     this.audio
       .play()
       .then((_) => {
@@ -146,9 +152,10 @@ export class MusicAnimation extends Animation {
     }
 
     while (!this.audio.ended) {
-      this.analyser.getByteFrequencyData(dataArray);
+      this.analyser.getByteFrequencyData(basBins);
+      this.analyser2.getByteFrequencyData(audioBins);
 
-      const spectrum = this.transform(dataArray);
+      const spectrum = this.transform(basBins.slice(0));
       let mult = Math.pow(this.multiplier(spectrum), 0.8);
       if (mult > 0.6) {
         this.val = 1.0;
@@ -166,9 +173,47 @@ export class MusicAnimation extends Animation {
         this.val
       );
 
-      this.icicles.setPixels(this.icicles.pixels.map((_, i) => colorToDisplay));
+      const updatedRadioPanels = radioPanels.map((p) =>
+        p.copyWith({ color: colorToDisplay })
+      );
+
+      const levels = new Array(this.header.xCount);
+      const binsPerLevel = Math.floor(
+        audioBins.length / (this.header.xCount * 2)
+      );
+      for (let levelIndex = 0; levelIndex < this.header.xCount; levelIndex++) {
+        const start = levelIndex * binsPerLevel;
+        const end = start + binsPerLevel;
+
+        let sum = 0;
+        for (let binIndex = start; binIndex < end; binIndex++) {
+          sum += audioBins[binIndex];
+        }
+        const avg = sum / binsPerLevel;
+        const level = avg / 255;
+        levels[levelIndex] = level;
+      }
+
+      this.icicles.setAllPixelsColor(new Color());
       const frame = this.icicles.toFrame(new Duration({ milliseconds: 20 }));
-      yield new AnimationView(frame, radioPanels);
+      const half = Math.floor(this.header.xCount / 2);
+      for (let x = 0; x < this.header.xCount; x++) {
+        const level = x < half ? levels[half - 1 - x] : levels[x - half];
+        const lightsCount = level * this.header.yCount;
+
+        for (let y = 0; y < lightsCount; y++) {
+          const ledIndex = this.icicles.getPixelIndex(x, y);
+          frame.pixels[ledIndex] = Color.linearBlend(
+            new Color(255, 0, 0),
+            new Color(0, 0, 255),
+            level
+          );
+        }
+      }
+      // -100 = -30
+      // -40 = -30
+
+      yield new AnimationView(frame, updatedRadioPanels);
     }
 
     return new AnimationView(intialFrame, radioPanels);

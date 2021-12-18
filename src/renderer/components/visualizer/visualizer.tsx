@@ -102,7 +102,7 @@ export const Visualizer = (props: VisualizerProps) => {
     <Container ref={targetRef}>
       <Stage
         options={{
-          backgroundColor: 0x171c28,
+          backgroundColor: 0x000000 ?? 0x171c28,
           antialias: true,
         }}
         height={size.height}
