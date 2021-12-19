@@ -31,7 +31,7 @@ const createWindow = (): void => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
@@ -56,35 +56,12 @@ app.on("activate", () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
-
-// let sending = false;
-// let newView: Uint8Array;
 const iciclePort = new IciclesPort("COM3");
 const transmit = async (animationViewBytes: Uint8Array) => {
-  // if (!animationViewBytes) {
-  //   if (newView !== undefined) {
-  //     const temp = newView;
-  //     newView = undefined;
-  //     await iciclePort.send(temp);
-  //     sending = false;
-  //   }
-  //   return;
-  // }
-
-  // if (sending == true) {
-  //   newView = animationViewBytes;
-  //   return;
-  // }
-
   await iciclePort.send(animationViewBytes);
 };
 
-ipcMain.on("displayView", (event, animationViewBytes: Uint8Array) => {
+ipcMain.on("displayView", (_, animationViewBytes: Uint8Array) => {
   if (animationViewBytes instanceof Uint8Array) {
     transmit(animationViewBytes);
   } else {
@@ -92,6 +69,6 @@ ipcMain.on("displayView", (event, animationViewBytes: Uint8Array) => {
   }
 });
 
-ipcMain.on("iciclesEnd", (event, animationViewBytes: Uint8Array) => {
+ipcMain.on("iciclesEnd", () => {
   iciclePort.stop();
 });

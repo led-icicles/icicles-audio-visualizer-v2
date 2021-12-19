@@ -161,6 +161,9 @@ export class IciclesPlayer {
     if (this._player === undefined) {
       throw new Error("Player is not defined");
     }
+
+    this._isPlaying = true;
+
     this._stats.begin();
     const { value: view, done } = this._player.next();
     this._stats.end();
