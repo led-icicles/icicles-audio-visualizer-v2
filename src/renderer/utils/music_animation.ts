@@ -35,7 +35,7 @@ export class MusicAnimation extends Animation {
     this.analyser2 = context.createAnalyser();
     mediaSource.connect(this.analyser2);
     this.analyser2.fftSize = 256;
-    this.analyser2.smoothingTimeConstant = 0.4;
+    this.analyser2.smoothingTimeConstant = 0.35;
 
     this.analyser = context.createAnalyser();
     mediaSource.connect(this.analyser);
@@ -157,7 +157,7 @@ export class MusicAnimation extends Animation {
 
       const spectrum = this.transform(basBins.slice(0));
       let mult = Math.pow(this.multiplier(spectrum), 0.8);
-      if (mult > 0.6) {
+      if (mult > 0.7) {
         this.val = 1.0;
       } else if (this.val > 0) {
         this.val -= 0.25;
