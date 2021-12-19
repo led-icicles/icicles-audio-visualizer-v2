@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { usePlayer } from "../../window";
 
 const Container = styled.div`
   display: flex;
-  height: 100px;
+  height: 60px;
   border-top: 1px solid #2d3747;
   background-color: #131a24;
   flex-direction: row;
@@ -45,39 +45,58 @@ const SliderFiller = styled.div`
   background-color: rgba(255, 255, 255, 0.8);
 `;
 
-const FrameCounter = styled.p`
-  color: white;
+const FrameCounter = styled.div`
   width: 100px;
-  text-align: center;
+  height: 60px;
+  position: relative;
   margin: 0px 24px 0px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > div {
+    position: relative !important;
+  }
 `;
 
-interface DataBarProps {
-  player: ReturnType<typeof usePlayer>;
-}
-export const DataBar = (props: DataBarProps) => {
+export const DataBar = () => {
+  const player = usePlayer();
+  const frameCounterContainer = useRef<HTMLDivElement>(null);
+  const sliderContainer = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (frameCounterContainer.current !== undefined) {
+      frameCounterContainer.current!.appendChild(player._stats.dom);
+    }
+  }, [frameCounterContainer.current]);
+
+  const onSliderClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    const target = sliderContainer.current;
+    if (target === null) return;
+    const sliderFromLeft = target.offsetLeft;
+    const sliderWidth = target.offsetWidth;
+    const fromStart = event.pageX - sliderFromLeft;
+    const progress = fromStart / sliderWidth;
+    player.setProgress(progress);
+  };
+
   return (
     <Container>
       <IconButton
-        onClick={
-          props.player.isPlaying ? props.player.stopPlayer : props.player.reset
-        }
+        onClick={player.isPlaying ? () => player.stop() : () => player.play()}
       >
-        {props.player.isPlaying ? "STOP" : "START"}
+        {player.isPlaying ? "STOP" : "START"}
       </IconButton>
-      <Slider>
+      <Slider ref={sliderContainer} onClick={onSliderClick}>
         <SliderFiller
           style={{
-            width: `${
-              ((props.player.frameData?.index ?? 0) /
-                props.player.framesCount) *
-              100
-            }%`,
+            width: `${player.progress * 100}%`,
           }}
         />
       </Slider>
-      <FrameCounter>
-        {props.player.frameData?.index ?? 0} / {props.player.framesCount}
+      <FrameCounter ref={frameCounterContainer}>
+        {/* {player.currentFrame} */}
+
+        {/* {player.frameData?.index ?? 0} / {player.framesCount} */}
       </FrameCounter>
     </Container>
   );

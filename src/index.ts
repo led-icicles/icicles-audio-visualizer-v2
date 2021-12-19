@@ -58,9 +58,35 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+// let sending = false;
+// let newView: Uint8Array;
 const iciclePort = new IciclesPort("COM3", { onData: console.log });
+const transmit = async (animationViewBytes: Uint8Array) => {
+  // if (!animationViewBytes) {
+  //   if (newView !== undefined) {
+  //     const temp = newView;
+  //     newView = undefined;
+  //     await iciclePort.send(temp);
+  //     sending = false;
+  //   }
+  //   return;
+  // }
+
+  // if (sending == true) {
+  //   newView = animationViewBytes;
+  //   return;
+  // }
+
+  await iciclePort.send(animationViewBytes);
+};
+
 ipcMain.on("displayView", (event, animationViewBytes: Uint8Array) => {
-  iciclePort.send(animationViewBytes);
+  if (animationViewBytes instanceof Uint8Array) {
+    transmit(animationViewBytes);
+  } else {
+    throw new Error("Unsupported data. Cannot display view");
+  }
 });
 
 ipcMain.on("iciclesEnd", (event, animationViewBytes: Uint8Array) => {

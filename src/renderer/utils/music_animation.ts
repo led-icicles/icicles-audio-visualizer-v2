@@ -19,11 +19,11 @@ export class MusicAnimation extends Animation {
     });
   }
 
-  protected readonly audio = document.createElement("audio");
-  protected basAnalyser: AnalyserNode;
-  protected audioAnalyser: AnalyserNode;
-  protected mediaSource: MediaElementAudioSourceNode;
-  protected context: AudioContext;
+  public readonly audio = document.createElement("audio");
+  protected basAnalyser?: AnalyserNode;
+  protected audioAnalyser?: AnalyserNode;
+  protected mediaSource?: MediaElementAudioSourceNode;
+  protected context?: AudioContext;
 
   public async load() {
     // var audio = document.getElementById("audio") as HTMLAudioElement;
@@ -46,12 +46,16 @@ export class MusicAnimation extends Animation {
   }
 
   public dispose(): void {
+    this.stop();
+    this.context?.close();
+    this.mediaSource?.disconnect();
+    this.audioAnalyser?.disconnect();
+    this.basAnalyser?.disconnect();
+  }
+
+  public stop() {
     this.audio.pause();
     this.audio.currentTime = 0;
-    this.context.close();
-    this.mediaSource.disconnect();
-    this.audioAnalyser.disconnect();
-    this.basAnalyser.disconnect();
   }
 
   protected icicles = new Icicles(this);
@@ -133,9 +137,9 @@ export class MusicAnimation extends Animation {
       // radio panels indexes starts from 1 (0 is a broadcast channel)
       .map((_, index) => new RadioPanelView(index + 1, new Color()));
 
-    const basBinCounts = this.basAnalyser.frequencyBinCount;
+    const basBinCounts = this.basAnalyser!.frequencyBinCount;
     const basBins = new Uint8Array(basBinCounts);
-    const audioBinCounts = this.audioAnalyser.frequencyBinCount;
+    const audioBinCounts = this.audioAnalyser!.frequencyBinCount;
     const audioBins = new Uint8Array(audioBinCounts);
 
     this.audio.src = URL.createObjectURL(this.file);
@@ -161,8 +165,8 @@ export class MusicAnimation extends Animation {
     }
 
     while (!this.audio.ended) {
-      this.basAnalyser.getByteFrequencyData(basBins);
-      this.audioAnalyser.getByteFrequencyData(audioBins);
+      this.basAnalyser!.getByteFrequencyData(basBins);
+      this.audioAnalyser!.getByteFrequencyData(audioBins);
 
       const spectrum = this.transform(basBins.slice(0));
       let mult = Math.pow(this.multiplier(spectrum), 0.8);
@@ -204,7 +208,7 @@ export class MusicAnimation extends Animation {
       }
 
       this.icicles.setAllPixelsColor(new Color());
-      const frame = this.icicles.toFrame(new Duration({ milliseconds: 20 }));
+      const frame = this.icicles.toFrame(new Duration({ milliseconds: 15 }));
       const half = Math.floor(this.header.xCount / 2);
       for (let x = 0; x < this.header.xCount; x++) {
         const level = x < half ? levels[half - 1 - x] : levels[x - half];

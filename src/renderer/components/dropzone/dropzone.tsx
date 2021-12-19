@@ -18,22 +18,22 @@ const Container = styled.div`
 `;
 
 export interface DropzoneProps {
-  addFile: (file: File) => void;
+  addFiles: (files: Array<File>) => void;
 }
 
-export const Dropzone = ({ addFile }: DropzoneProps) => {
+export const Dropzone = ({ addFiles }: DropzoneProps) => {
   const onDrop = useCallback<OnDropFunction>(
     (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        addFile(acceptedFiles[0]);
+        addFiles(acceptedFiles);
       }
     },
-    [addFile]
+    [addFiles]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    maxFiles: 1,
-    accept: [".anim",".mp3"],
+    // maxFiles: 1,
+    accept: [".anim", ".mp3"],
   });
 
   return (

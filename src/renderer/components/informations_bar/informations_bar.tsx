@@ -56,22 +56,22 @@ const Tile = styled.div`
 
 interface InformationsBarProps {
   animation: Animation | undefined;
-  addFile: (file: File) => void;
+  addFiles: (file: Array<File>) => void;
 }
 
 export const InformationsBar = (props: InformationsBarProps) => {
-  const addFile = props.addFile;
+  const addFiles = props.addFiles;
   const onDrop = useCallback<OnDropFunction>(
     (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        addFile(acceptedFiles[0]);
+        addFiles(acceptedFiles);
       }
     },
-    [addFile]
+    [addFiles]
   );
   const { open, getInputProps } = useDropzone({
     onDrop,
-    maxFiles: 1,
+    // maxFiles: 1,
     accept: [".anim", ".mp3"],
   });
 

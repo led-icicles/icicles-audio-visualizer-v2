@@ -11,43 +11,18 @@ const Container = styled.div`
   flex: 1;
 `;
 
-interface PlayerProps extends VisualizerProps {
+interface PlayerProps {
   size: { width: number; height: number };
 }
 
-export const Player = ({
-  animation,
-  size,
-  player: {
-    player,
-    stopPlayer,
-    setFrameData,
-    frameData,
-    overralDuration,
-    currentFrameDisplayDuration,
-  },
-}: PlayerProps) => {
-  const columns = animation.header.xCount;
-  const rows = animation.header.yCount;
+export const Player = ({ size }: PlayerProps) => {
+  const player = usePlayer();
+  const columns = player.xCount;
+  const rows = player.yCount;
 
+  const [view, setView] = useState(player.view);
   useTick((delta, ticker) => {
-    if (frameData!.done || !player.current) return;
-
-    currentFrameDisplayDuration.current += ticker.deltaMS;
-    overralDuration.current += ticker.deltaMS;
-    if (currentFrameDisplayDuration.current >= frameData!.view.frame.duration) {
-      currentFrameDisplayDuration.current = 0;
-      const { value: view, done } = player.current.next();
-      if (done) {
-        stopPlayer();
-      } else {
-        setFrameData((data) => ({
-          view: view!,
-          index: data!.index + 1,
-          done: false,
-        }));
-      }
-    }
+    setView(player.view);
   });
 
   return (
@@ -58,23 +33,18 @@ export const Player = ({
           height={size.height}
           columns={columns}
           rows={rows}
-          view={frameData!.view}
+          view={view}
         />
       )}
     </>
   );
 };
 
-interface VisualizerProps {
-  animation: Animation;
-  player: ReturnType<typeof usePlayer>;
-}
-
-export const Visualizer = (props: VisualizerProps) => {
+export const Visualizer = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const LEFT_PANEL_WIDTH = 250;
-  const BOTTOM_PANEL_HEIGHT = 100;
+  const BOTTOM_PANEL_HEIGHT = 60;
 
   const updateSceneSize = useCallback(() => {
     if (!targetRef.current) return;
@@ -108,7 +78,7 @@ export const Visualizer = (props: VisualizerProps) => {
         height={size.height}
         width={size.width}
       >
-        <Player size={size} player={props.player} animation={props.animation} />
+        <Player size={size} />
       </Stage>
     </Container>
   );
