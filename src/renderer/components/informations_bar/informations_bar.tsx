@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import { OnDropFunction } from "../dropzone/dropzone";
 import { Animation } from "icicles-animation";
+import { MusicAnimation } from "../../utils/music_animation";
 
 const Container = styled.div`
   width: 250px;
@@ -100,7 +101,7 @@ export const InformationsBar = (props: InformationsBarProps) => {
                 <th>Liczba klatek:</th>
               </tr>
               <tr>
-                <td>{props.animation.frames.length}</td>
+                <td>{props.animation.animationFramesCount}</td>
               </tr>
               <tr>
                 <th>Rozmiar:</th>
@@ -112,7 +113,11 @@ export const InformationsBar = (props: InformationsBarProps) => {
                 <th>Pętle:</th>
               </tr>
               <tr>
-                <td>{props.animation.header.loopsCount}</td>
+                <td>
+                  {props.animation instanceof MusicAnimation
+                    ? "Nie dotyczy"
+                    : props.animation.header.loopsCount}
+                </td>
               </tr>
               <tr>
                 <th>Liczba pikseli:</th>

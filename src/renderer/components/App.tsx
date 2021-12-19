@@ -1,4 +1,4 @@
-import React, {  useCallback } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { usePlayer } from "../window";
 import { MusicAnimation } from "../utils/music_animation";
@@ -30,7 +30,7 @@ export function App() {
     const animations = new Array(files.length);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (file.name.includes("mp3")) {
+      if (file.name.toLowerCase().includes("mp3")) {
         const musicAnimation = new MusicAnimation(file);
         animations[i] = musicAnimation;
       } else {

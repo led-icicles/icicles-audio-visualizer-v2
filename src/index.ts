@@ -17,8 +17,10 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     // fullscreen: true,
     // alwaysOnTop: true,
-    height: 600,
-    width: 800,
+    height: 700,
+    minHeight: 700,
+    minWidth: 1000,
+    width: 1000,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },

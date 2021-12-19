@@ -31,18 +31,31 @@ const IconButton = styled.div`
 
 const Slider = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex: 1;
+  max-width: 400px;
   height: 10px;
-  background-color: rgba(255, 255, 255, 0.2);
   margin: 16px;
-  border-radius: 5px;
-  overflow: hidden;
   position: relative;
+`;
+export const SliderTrack = styled.div`
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 4px;
 `;
 const SliderFiller = styled.div`
   position: absolute;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.8);
+`;
+
+const Spacer = styled.div`
+  display: flex;
+  flex: 1;
 `;
 
 const FrameCounter = styled.div`
@@ -82,22 +95,27 @@ export const DataBar = () => {
   return (
     <Container>
       <IconButton
-        onClick={player.isPlaying ? () => player.stop() : () => player.play()}
+        onClick={
+          player.animations.length == 0
+            ? undefined
+            : player.isPlaying
+            ? () => player.stop()
+            : () => player.play()
+        }
       >
         {player.isPlaying ? "STOP" : "START"}
       </IconButton>
       <Slider ref={sliderContainer} onClick={onSliderClick}>
-        <SliderFiller
-          style={{
-            width: `${player.progress * 100}%`,
-          }}
-        />
+        <SliderTrack>
+          <SliderFiller
+            style={{
+              width: `${player.progress * 100}%`,
+            }}
+          />
+        </SliderTrack>
       </Slider>
-      <FrameCounter ref={frameCounterContainer}>
-        {/* {player.currentFrame} */}
-
-        {/* {player.frameData?.index ?? 0} / {player.framesCount} */}
-      </FrameCounter>
+      <Spacer />
+      <FrameCounter ref={frameCounterContainer} />
     </Container>
   );
 };

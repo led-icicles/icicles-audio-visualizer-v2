@@ -25,6 +25,21 @@ export class MusicAnimation extends Animation {
   protected mediaSource?: MediaElementAudioSourceNode;
   protected context?: AudioContext;
 
+  get duration(): number {
+    const duration = this.audio?.duration;
+    return duration === undefined || isNaN(duration) ? 0 : duration * 1000; // return in ms
+  }
+
+  get size(): number {
+    return this.file.size;
+  }
+
+  private _frameDuration: number = 20;
+
+  get animationFramesCount(): number {
+    return this.duration / this._frameDuration;
+  }
+
   public load() {
     this.dispose();
     this.audio = document.createElement("audio");
@@ -139,7 +154,7 @@ export class MusicAnimation extends Animation {
     const intialFrame: VisualFrame = VisualFrame.filled(
       this.header.pixelsCount,
       new Color(0, 0, 0),
-      20
+      this._frameDuration
     );
 
     const radioPanels = new Array(this.header.radioPanelsCount)
@@ -224,7 +239,9 @@ export class MusicAnimation extends Animation {
       }
 
       this.icicles.setAllPixelsColor(new Color());
-      const frame = this.icicles.toFrame(new Duration({ milliseconds: 15 }));
+      const frame = this.icicles.toFrame(
+        new Duration({ milliseconds: this._frameDuration })
+      );
       const half = Math.floor(this.header.xCount / 2);
       for (let x = 0; x < this.header.xCount; x++) {
         const level = x < half ? levels[half - 1 - x] : levels[x - half];
