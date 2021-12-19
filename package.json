@@ -54,7 +54,10 @@
                 {
                   "html": "./src/index.html",
                   "js": "./src/renderer.ts",
-                  "name": "main_window"
+                  "name": "main_window",
+                  "preload": {
+                    "js": "./src/preload/preload.ts"
+                  }
                 }
               ]
             }
@@ -73,6 +76,7 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@types/react-dropzone": "^5.1.0",
+    "@types/serialport": "^8.0.2",
     "@types/styled-components": "^5.1.18",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
@@ -93,10 +97,12 @@
     "@inlet/react-pixi": "^6.6.5",
     "electron-squirrel-startup": "^1.0.0",
     "icicles-animation": "github:led-icicles/icicles-animation-js",
+    "icicles-serial": "github:led-icicles/icicles-serial",
     "pixi.js": "^6.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
+    "serialport": "^9.2.8",
     "styled-components": "^5.3.3"
   }
 }

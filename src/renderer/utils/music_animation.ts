@@ -1,13 +1,10 @@
 import {
-  AdditiveFrame,
   Animation,
   AnimationView,
   Color,
   Colors,
-  DelayFrame,
   Duration,
   Icicles,
-  RadioColorFrame,
   RadioPanelView,
   VisualFrame,
 } from "icicles-animation";
@@ -23,30 +20,39 @@ export class MusicAnimation extends Animation {
   }
 
   protected readonly audio = document.createElement("audio");
-  protected analyser: AnalyserNode;
-  protected analyser2: AnalyserNode;
+  protected basAnalyser: AnalyserNode;
+  protected audioAnalyser: AnalyserNode;
+  protected mediaSource: MediaElementAudioSourceNode;
+  protected context: AudioContext;
 
   public async load() {
     // var audio = document.getElementById("audio") as HTMLAudioElement;
 
-    var context = new AudioContext();
-    const mediaSource = context.createMediaElementSource(this.audio);
+    this.context = new AudioContext();
+    this.mediaSource = this.context.createMediaElementSource(this.audio);
 
-    this.analyser2 = context.createAnalyser();
-    mediaSource.connect(this.analyser2);
-    this.analyser2.fftSize = 256;
-    this.analyser2.smoothingTimeConstant = 0.35;
+    this.audioAnalyser = this.context.createAnalyser();
+    this.mediaSource.connect(this.audioAnalyser);
+    this.audioAnalyser.fftSize = 256;
+    this.audioAnalyser.smoothingTimeConstant = 0.35;
 
-    this.analyser = context.createAnalyser();
-    mediaSource.connect(this.analyser);
-    this.analyser.connect(context.destination);
-    this.analyser.smoothingTimeConstant = this.config.temporalSmoothing;
-    this.analyser.minDecibels = this.config.minDecibels;
-    this.analyser.maxDecibels = this.config.maxDecibels;
-    this.analyser.fftSize = this.config.fftSize;
+    this.basAnalyser = this.context.createAnalyser();
+    this.mediaSource.connect(this.basAnalyser);
+    this.basAnalyser.connect(this.context.destination);
+    this.basAnalyser.smoothingTimeConstant = this.config.temporalSmoothing;
+    this.basAnalyser.minDecibels = this.config.minDecibels;
+    this.basAnalyser.maxDecibels = this.config.maxDecibels;
+    this.basAnalyser.fftSize = this.config.fftSize;
   }
 
-  protected startTime = Date.now();
+  public dispose(): void {
+    this.audio.pause();
+    this.audio.currentTime = 0;
+    this.context.close();
+    this.mediaSource.disconnect();
+    this.audioAnalyser.disconnect();
+    this.basAnalyser.disconnect();
+  }
 
   protected icicles = new Icicles(this);
 
@@ -87,7 +93,8 @@ export class MusicAnimation extends Animation {
       (-Math.pow(intermediate, transformer) + transformer * intermediate)
     );
   };
-  // I'm not convinced this is a Savitsky-Golay smooth. I'm not sure what it is actually.
+
+  // not convinced this is a Savitsky-Golay smooth. I'm not sure what it is actually.
   protected savitskyGolaySmooth = (array: Uint8Array) => {
     let lastArray = array;
     let newArr = new Uint8Array(array.length);
@@ -126,16 +133,17 @@ export class MusicAnimation extends Animation {
       // radio panels indexes starts from 1 (0 is a broadcast channel)
       .map((_, index) => new RadioPanelView(index + 1, new Color()));
 
-    const basBinCounts = this.analyser.frequencyBinCount;
+    const basBinCounts = this.basAnalyser.frequencyBinCount;
     const basBins = new Uint8Array(basBinCounts);
-    const audioBinCounts = this.analyser2.frequencyBinCount;
+    const audioBinCounts = this.audioAnalyser.frequencyBinCount;
     const audioBins = new Uint8Array(audioBinCounts);
 
     this.audio.src = URL.createObjectURL(this.file);
     this.audio.load();
 
-    /// blank frame for player setup (audio pause).
-    yield new AnimationView(intialFrame.copy(), radioPanels);
+    const view = new AnimationView(intialFrame, radioPanels);
+
+    yield view;
 
     this.audio
       .play()
@@ -148,12 +156,13 @@ export class MusicAnimation extends Animation {
       });
 
     if (!this._loaded) {
-      yield new AnimationView(intialFrame.copy(), radioPanels);
+      const view = new AnimationView(intialFrame, radioPanels);
+      yield view;
     }
 
     while (!this.audio.ended) {
-      this.analyser.getByteFrequencyData(basBins);
-      this.analyser2.getByteFrequencyData(audioBins);
+      this.basAnalyser.getByteFrequencyData(basBins);
+      this.audioAnalyser.getByteFrequencyData(audioBins);
 
       const spectrum = this.transform(basBins.slice(0));
       let mult = Math.pow(this.multiplier(spectrum), 0.8);
@@ -210,86 +219,12 @@ export class MusicAnimation extends Animation {
           );
         }
       }
-      // -100 = -30
-      // -40 = -30
 
-      yield new AnimationView(frame, updatedRadioPanels);
+      const view = new AnimationView(frame, updatedRadioPanels);
+
+      yield view;
     }
 
-    return new AnimationView(intialFrame, radioPanels);
+    return view;
   }
 }
-
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// No Node.js APIs are available in this process unless
-// nodeIntegration is set to true in webPreferences.
-// Use preload.js to selectively enable features
-// needed in the renderer process.
-
-// console.log("icicles", icicles);
-
-// (window as any).native.receive("fromMain", (data: any) => {
-//   console.log(`Received ${data} from main process`);
-// });
-// (window as any).native.send("toMain", "some data");
-// window.onload = function () {
-//   var file = document.getElementById("thefile") as HTMLInputElement;
-//   var audio = document.getElementById("audio") as HTMLAudioElement;
-
-//   var context = new AudioContext();
-//   const mediaSource = context.createMediaElementSource(audio);
-
-//   var analyser = context.createAnalyser();
-//   mediaSource.connect(analyser);
-//   analyser.connect(context.destination);
-//   analyser.smoothingTimeConstant = Config.temporalSmoothing;
-//   analyser.minDecibels = Config.minDecibels;
-//   analyser.maxDecibels = Config.maxDecibels;
-//   analyser.fftSize = Config.fftSize;
-
-//   file.onchange = function () {
-//     var files = (this as any).files as Array<File>;
-//     audio.src = URL.createObjectURL(files[0]);
-//     audio.load();
-//     audio.play();
-
-//     var canvas = document.getElementById("canvas") as HTMLCanvasElement;
-//     canvas.width = window.innerWidth;
-//     canvas.height = window.innerHeight;
-//     var ctx = canvas.getContext("2d");
-
-//     var bufferLength = analyser.frequencyBinCount;
-//     console.log("bufferLength", bufferLength);
-
-//     var dataArray = new Uint8Array(bufferLength);
-
-//     var WIDTH = canvas.width;
-//     var HEIGHT = canvas.height;
-
-//     var barWidth = (WIDTH / bufferLength) * 2.5;
-//     var barHeight;
-//     var x = 0;
-
-//     function renderFrame() {
-//       requestAnimationFrame(renderFrame);
-
-//       x = 0;
-
-//       analyser.getByteFrequencyData(dataArray);
-
-//       ctx.fillStyle = "#000";
-//       ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-//       if (Date.now() - startTime > 20) {
-//         (window as any).native.send("toMain", dataArray);
-//         startTime = Date.now();
-//       }
-
-//       return;
-//     }
-
-//     audio.play();
-//     renderFrame();
-//   };
-// };

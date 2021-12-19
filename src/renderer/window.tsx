@@ -6,6 +6,7 @@ import { Visualizer } from "./components/visualizer/visualizer";
 import { Animation, AnimationView } from "icicles-animation";
 import { DataBar } from "./components/data_bar/data_bar";
 import { MusicAnimation } from "./utils/music_animation";
+import { IciclesPlayer } from "./utils/icicles_player";
 
 const Container = styled.div`
   position: absolute;
@@ -27,7 +28,7 @@ export const usePlayer = ({
 }: {
   animation: Animation | undefined;
 }) => {
-  const player = useRef<ReturnType<Animation["play"]>>();
+  const player = useRef<IciclesPlayer>();
   const currentFrameDisplayDuration = useRef<number>(0);
   const overralDuration = useRef<number>(0);
 
@@ -43,7 +44,10 @@ export const usePlayer = ({
       currentFrameDisplayDuration.current = 0;
 
       if (animation === undefined) return;
-      player.current = animation.play();
+      const generator = animation.play();
+
+      player.current = new IciclesPlayer(generator);
+
       const { value: view } = player.current.next();
       setFrameData({
         view,
@@ -61,7 +65,10 @@ export const usePlayer = ({
   return {
     framesCount: animation?.animationFramesCount ?? 0,
     reset: () => resetFrameData(false),
-    stopPlayer: () => resetFrameData(true),
+    stopPlayer: () => {
+      player.current?.stop();
+      resetFrameData(true);
+    },
     frameData,
     setFrameData,
     overralDuration,
@@ -76,8 +83,9 @@ function App() {
   const [activeAnimation, setActiveAnimation] = useState<Animation>();
 
   const addFile = useCallback(async (file: File) => {
+    if (activeAnimation !== undefined) {
+    }
     if (file.name.includes("mp3")) {
-      console.log("MP3");
       const musicAnimation = new MusicAnimation(file);
       await musicAnimation.load();
       setActiveAnimation(musicAnimation);
