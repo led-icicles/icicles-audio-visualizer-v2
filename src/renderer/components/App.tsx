@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
 import { usePlayer } from "../window";
 import { MusicAnimation } from "../utils/music_animation";
@@ -7,6 +7,8 @@ import { Dropzone } from "./dropzone/dropzone";
 import { InformationsBar } from "./informations_bar/informations_bar";
 import { Visualizer } from "./visualizer/visualizer";
 import { Animation } from "icicles-animation";
+import { AnimationsBar } from "./informations_bar/animations_bar";
+import { PlayerContext } from "../utils/player_context";
 
 const Container = styled.div`
   position: absolute;
@@ -24,7 +26,7 @@ const ContentContainer = styled.div`
 `;
 
 export function App() {
-  const player = usePlayer();
+  const player = useContext(PlayerContext);
 
   const addFiles = useCallback(async (files: Array<File>) => {
     const animations = new Array(files.length);
@@ -42,18 +44,18 @@ export function App() {
     }
     player.play(animations);
   }, []);
+
+  console.log("DAD");
+
   return (
     <Container>
       <ContentContainer>
-        <InformationsBar
+        <AnimationsBar
           addFiles={addFiles}
           animation={player.currentAnimation}
         />
-        {player.animations.length > 0 ? (
-          <Visualizer />
-        ) : (
-          <Dropzone addFiles={addFiles} />
-        )}
+        <Visualizer />
+        <InformationsBar />
       </ContentContainer>
       <DataBar />
     </Container>

@@ -1,20 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { usePlayer } from "../../window";
+import { FiPlay, FiPause } from "react-icons/fi";
 
 const Container = styled.div`
   display: flex;
   height: 60px;
-  border-top: 1px solid #2d3747;
-  background-color: #131a24;
+  border-top: 1px solid #202020;
+  background-color: #101010;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 `;
 
 const IconButton = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   margin: 16px;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.05);
@@ -26,6 +27,10 @@ const IconButton = styled.div`
   user-select: none;
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
+  }
+  & > * {
+    width: 40%;
+    height: 40%;
   }
 `;
 
@@ -103,7 +108,7 @@ export const DataBar = () => {
             : () => player.play()
         }
       >
-        {player.isPlaying ? "STOP" : "START"}
+        {player.isPlaying ? <FiPause /> : <FiPlay />}
       </IconButton>
       <Slider ref={sliderContainer} onClick={onSliderClick}>
         <SliderTrack>

@@ -1,16 +1,19 @@
-import React, { useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import React from "react";
 import styled from "styled-components";
-import { OnDropFunction } from "../dropzone/dropzone";
 import { Animation } from "icicles-animation";
 import { MusicAnimation } from "../../utils/music_animation";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { usePlayer } from "../../window";
 
 const Container = styled.div`
-  width: 250px;
+  height: calc(100vh - 60px);
+  width: calc(250px - 8px);
+  padding: 0 4px;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #2d3747;
-  color: #67788a;
+  border-left: 1px solid #202020;
+  color: #808080;
   justify-content: start;
 
   & > table {
@@ -33,117 +36,82 @@ const Container = styled.div`
 
 const Title = styled.p`
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
-const Tile = styled.div`
-  margin: 8px;
-  height: 50px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 14px;
-  text-overflow: ellipsis;
-  max-lines: 1;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-`;
-
-interface InformationsBarProps {
-  animation: Animation | undefined;
-  addFiles: (file: Array<File>) => void;
-}
+interface InformationsBarProps {}
 
 export const InformationsBar = (props: InformationsBarProps) => {
-  const addFiles = props.addFiles;
-  const onDrop = useCallback<OnDropFunction>(
-    (acceptedFiles) => {
-      if (acceptedFiles.length > 0) {
-        addFiles(acceptedFiles);
-      }
-    },
-    [addFiles]
-  );
-  const { open, getInputProps } = useDropzone({
-    onDrop,
-    // maxFiles: 1,
-    accept: [".anim", ".mp3"],
-  });
+  const player = usePlayer();
 
   return (
     <Container>
-      <input {...getInputProps()} />
-      <Title>Sople</Title>
-      <Tile onClick={() => open()}>Otwórz plik</Tile>
-      {props.animation && (
-        <>
-          <table>
-            <tbody>
-              <tr>
-                <th>Nazwa:</th>
-              </tr>
-              <tr>
-                <td>{props.animation.header.name}</td>
-              </tr>
-              <tr>
-                <th>Czas trwania:</th>
-              </tr>
-              <tr>
-                <td>{props.animation.duration / 1000}s</td>
-              </tr>
-              <tr>
-                <th>Liczba klatek:</th>
-              </tr>
-              <tr>
-                <td>{props.animation.animationFramesCount}</td>
-              </tr>
-              <tr>
-                <th>Rozmiar:</th>
-              </tr>
-              <tr>
-                <td>{(props.animation.size / 1000).toFixed(2)}KB</td>
-              </tr>
-              <tr>
-                <th>Pętle:</th>
-              </tr>
-              <tr>
-                <td>
-                  {props.animation instanceof MusicAnimation
-                    ? "Nie dotyczy"
-                    : props.animation.header.loopsCount}
-                </td>
-              </tr>
-              <tr>
-                <th>Liczba pikseli:</th>
-                <th>x:</th>
-                <th>y:</th>
-              </tr>
-              <tr>
-                <td>{props.animation.header.pixelsCount}</td>
-                <td>{props.animation.header.xCount}</td>
-                <td>{props.animation.header.yCount}</td>
-              </tr>
-              <tr>
-                <th>Wersja animacji:</th>
-              </tr>
-              <tr>
-                <td>{props.animation.header.versionNumber}</td>
-              </tr>
-              <tr>
-                <th>Liczba radio paneli:</th>
-              </tr>
-              <tr>
-                <td>{props.animation.header.radioPanelsCount}</td>
-              </tr>
-            </tbody>
-          </table>
-        </>
+      <Title>Informacje</Title>
+      {player.currentAnimation && (
+        <PerfectScrollbar>
+          <>
+            <table>
+              <tbody>
+                <tr>
+                  <th>Nazwa:</th>
+                </tr>
+                <tr>
+                  <td>{player.currentAnimation!.header.name}</td>
+                </tr>
+                <tr>
+                  <th>Czas trwania:</th>
+                </tr>
+                <tr>
+                  <td>{player.currentAnimation.duration / 1000}s</td>
+                </tr>
+                <tr>
+                  <th>Liczba klatek:</th>
+                </tr>
+                <tr>
+                  <td>{player.currentAnimation.animationFramesCount}</td>
+                </tr>
+                <tr>
+                  <th>Rozmiar:</th>
+                </tr>
+                <tr>
+                  <td>{(player.currentAnimation.size / 1000).toFixed(2)}KB</td>
+                </tr>
+                <tr>
+                  <th>Pętle:</th>
+                </tr>
+                <tr>
+                  <td>
+                    {player.currentAnimation instanceof MusicAnimation
+                      ? "Nie dotyczy"
+                      : player.currentAnimation.header.loopsCount}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Liczba pikseli:</th>
+                  <th>x:</th>
+                  <th>y:</th>
+                </tr>
+                <tr>
+                  <td>{player.currentAnimation.header.pixelsCount}</td>
+                  <td>{player.currentAnimation.header.xCount}</td>
+                  <td>{player.currentAnimation.header.yCount}</td>
+                </tr>
+                <tr>
+                  <th>Wersja animacji:</th>
+                </tr>
+                <tr>
+                  <td>{player.currentAnimation.header.versionNumber}</td>
+                </tr>
+                <tr>
+                  <th>Liczba radio paneli:</th>
+                </tr>
+                <tr>
+                  <td>{player.currentAnimation.header.radioPanelsCount}</td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        </PerfectScrollbar>
       )}
     </Container>
   );

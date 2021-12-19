@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { App } from "./components/App";
 import { IciclesPlayer } from "./utils/icicles_player";
-
-const playerInstance = new IciclesPlayer();
-const PlayerContext = React.createContext(playerInstance);
+import { PlayerContext, playerInstance } from "./utils/player_context";
 
 export const usePlayer = (): IciclesPlayer => {
   const [_, update] = useState(0);

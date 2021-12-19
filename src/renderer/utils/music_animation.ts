@@ -37,11 +37,11 @@ export class MusicAnimation extends Animation {
   private _frameDuration: number = 20;
 
   get animationFramesCount(): number {
-    return this.duration / this._frameDuration;
+    return Math.floor(this.duration / this._frameDuration);
   }
 
   public load() {
-    this.dispose();
+    this.unload();
     this.audio = document.createElement("audio");
 
     this.context = new AudioContext();
@@ -61,8 +61,7 @@ export class MusicAnimation extends Animation {
     this.basAnalyser.fftSize = this.config.fftSize;
   }
 
-  // TODO Change name, as after dispose this animation can be still used after performing load
-  public dispose(): void {
+  public unload(): void {
     this.stop();
     this.context?.close();
     this.mediaSource?.disconnect();
@@ -147,7 +146,7 @@ export class MusicAnimation extends Animation {
   };
 
   protected val = 0;
-  protected color = Colors.orange;
+  protected color = Colors.white;
   protected darker = Color.linearBlend(new Color(), this.color, 0.1);
 
   public *play(): Generator<AnimationView, AnimationView, AnimationView> {
@@ -260,7 +259,7 @@ export class MusicAnimation extends Animation {
       yield new AnimationView(frame, updatedRadioPanels);
     }
 
-    this.dispose();
+    this.unload();
     return new AnimationView(intialFrame, radioPanels);
   }
 }

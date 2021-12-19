@@ -85,6 +85,16 @@ export class IciclesPlayer {
     }
   }
 
+  public playAnimationAt(index: number) {
+    if (index >= this.animations.length) {
+      throw new Error("Animation index is larger than animations count");
+    } else if (index < 0) {
+      throw new Error("Invalid index value. Index cannot be negative");
+    }
+
+    this.setupAnimation(index);
+  }
+
   private readonly _listeners: Array<UpdateCallback> = [];
   public addListener = (listener: UpdateCallback) => {
     const includes = this._listeners.includes(listener);
@@ -127,7 +137,12 @@ export class IciclesPlayer {
       if (animations.length === 0) {
         throw new Error("At least one animation is required.");
       }
-      this._animations.forEach((animation) => animation.dispose());
+      this._animations.forEach((animation) => {
+        if (animation instanceof MusicAnimation) {
+          animation.unload();
+        }
+      });
+
       this._animations.length = 0;
       this._animations.push(...animations);
     } else if (this._animations.length === 0) {
@@ -162,6 +177,10 @@ export class IciclesPlayer {
   };
 
   protected setupAnimation(currentAnimationIndex: number): void {
+    if (this.currentAnimation instanceof MusicAnimation) {
+      this.currentAnimation.unload();
+    }
+
     this._currentAnimationIndex = currentAnimationIndex;
     this._currentFrame = 0;
     const animation = this.animations[this._currentAnimationIndex];
@@ -170,6 +189,8 @@ export class IciclesPlayer {
       animation.load();
     }
     this._player = this._currentAnimation.play();
+    this._clearTimeout();
+    this._play();
   }
 
   protected onNewView = (view: AnimationView) => {
@@ -183,8 +204,6 @@ export class IciclesPlayer {
     console.log("END");
     // stop if loop is disabled
     // this.stop();
-
-    this.currentAnimation?.dispose();
 
     let index = this._currentAnimationIndex;
     if (++index >= this.animations.length) {

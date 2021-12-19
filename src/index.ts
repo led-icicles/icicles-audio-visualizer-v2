@@ -19,13 +19,14 @@ const createWindow = (): void => {
     // alwaysOnTop: true,
     height: 700,
     minHeight: 700,
-    minWidth: 1000,
-    width: 1000,
+    minWidth: 1280,
+    width: 1280,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
-
+  mainWindow.setBackgroundColor("#101010");
+  mainWindow.setMenu(null);
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
@@ -63,7 +64,7 @@ app.on("activate", () => {
 
 // let sending = false;
 // let newView: Uint8Array;
-const iciclePort = new IciclesPort("COM3", { onData: console.log });
+const iciclePort = new IciclesPort("COM3");
 const transmit = async (animationViewBytes: Uint8Array) => {
   // if (!animationViewBytes) {
   //   if (newView !== undefined) {

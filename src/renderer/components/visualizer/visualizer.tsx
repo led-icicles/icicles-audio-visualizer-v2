@@ -43,7 +43,7 @@ export const Player = ({ size }: PlayerProps) => {
 export const Visualizer = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const LEFT_PANEL_WIDTH = 250;
+  const LEFT_PANEL_WIDTH = 280 + 250;
   const BOTTOM_PANEL_HEIGHT = 60;
 
   const updateSceneSize = useCallback(() => {
@@ -72,7 +72,7 @@ export const Visualizer = () => {
     <Container ref={targetRef}>
       <Stage
         options={{
-          backgroundColor: 0x000000 ?? 0x171c28,
+          backgroundColor: 0x101010,
           antialias: true,
         }}
         height={size.height}
