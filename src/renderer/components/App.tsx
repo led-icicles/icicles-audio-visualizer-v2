@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, {  useCallback } from "react";
 import styled from "styled-components";
 import { usePlayer } from "../window";
 import { MusicAnimation } from "../utils/music_animation";
@@ -32,15 +32,12 @@ export function App() {
       const file = files[i];
       if (file.name.includes("mp3")) {
         const musicAnimation = new MusicAnimation(file);
-        await musicAnimation.load();
         animations[i] = musicAnimation;
-        // player.play([musicAnimation]);
       } else {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         const animation = await Animation.decode(buffer);
         animations[i] = animation;
-        // player.play([animation]);
       }
     }
     player.play(animations);
@@ -48,7 +45,10 @@ export function App() {
   return (
     <Container>
       <ContentContainer>
-        <InformationsBar addFiles={addFiles} animation={player.currentAnimation} />
+        <InformationsBar
+          addFiles={addFiles}
+          animation={player.currentAnimation}
+        />
         {player.animations.length > 0 ? (
           <Visualizer />
         ) : (

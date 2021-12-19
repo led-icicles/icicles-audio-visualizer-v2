@@ -19,14 +19,15 @@ export class MusicAnimation extends Animation {
     });
   }
 
-  public readonly audio = document.createElement("audio");
+  public audio?: HTMLAudioElement;
   protected basAnalyser?: AnalyserNode;
   protected audioAnalyser?: AnalyserNode;
   protected mediaSource?: MediaElementAudioSourceNode;
   protected context?: AudioContext;
 
-  public async load() {
-    // var audio = document.getElementById("audio") as HTMLAudioElement;
+  public load() {
+    this.dispose();
+    this.audio = document.createElement("audio");
 
     this.context = new AudioContext();
     this.mediaSource = this.context.createMediaElementSource(this.audio);
@@ -45,17 +46,26 @@ export class MusicAnimation extends Animation {
     this.basAnalyser.fftSize = this.config.fftSize;
   }
 
+  // TODO Change name, as after dispose this animation can be still used after performing load
   public dispose(): void {
     this.stop();
     this.context?.close();
     this.mediaSource?.disconnect();
     this.audioAnalyser?.disconnect();
     this.basAnalyser?.disconnect();
+    this.audio = undefined;
+    this.context = undefined;
+    this.mediaSource = undefined;
+    this.audioAnalyser = undefined;
+    this.basAnalyser = undefined;
+    this._loaded = false;
   }
 
   public stop() {
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    if (this.audio !== undefined) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
   }
 
   protected icicles = new Icicles(this);
@@ -137,20 +147,27 @@ export class MusicAnimation extends Animation {
       // radio panels indexes starts from 1 (0 is a broadcast channel)
       .map((_, index) => new RadioPanelView(index + 1, new Color()));
 
+    // If object is not loaded
+    if (
+      !this.audio ||
+      !this.basAnalyser ||
+      !this.audioAnalyser ||
+      !this.mediaSource ||
+      !this.context
+    ) {
+      this.load();
+      yield new AnimationView(intialFrame, radioPanels);
+    }
+
     const basBinCounts = this.basAnalyser!.frequencyBinCount;
     const basBins = new Uint8Array(basBinCounts);
     const audioBinCounts = this.audioAnalyser!.frequencyBinCount;
     const audioBins = new Uint8Array(audioBinCounts);
 
-    this.audio.src = URL.createObjectURL(this.file);
-    this.audio.load();
+    this.audio!.src = URL.createObjectURL(this.file);
+    this.audio!.load();
 
-    const view = new AnimationView(intialFrame, radioPanels);
-
-    yield view;
-
-    this.audio
-      .play()
+    this.audio!.play()
       .then((_) => {
         this._loaded = true;
       })
@@ -160,11 +177,10 @@ export class MusicAnimation extends Animation {
       });
 
     if (!this._loaded) {
-      const view = new AnimationView(intialFrame, radioPanels);
-      yield view;
+      yield new AnimationView(intialFrame, radioPanels);
     }
 
-    while (!this.audio.ended) {
+    while (!this.audio!.ended) {
       this.basAnalyser!.getByteFrequencyData(basBins);
       this.audioAnalyser!.getByteFrequencyData(audioBins);
 
@@ -224,11 +240,10 @@ export class MusicAnimation extends Animation {
         }
       }
 
-      const view = new AnimationView(frame, updatedRadioPanels);
-
-      yield view;
+      yield new AnimationView(frame, updatedRadioPanels);
     }
 
-    return view;
+    this.dispose();
+    return new AnimationView(intialFrame, radioPanels);
   }
 }

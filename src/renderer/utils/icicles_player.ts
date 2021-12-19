@@ -67,16 +67,19 @@ export class IciclesPlayer {
     if (currentAnimation === undefined) return 0;
 
     if (currentAnimation instanceof MusicAnimation) {
-      return (
-        currentAnimation.audio.currentTime / currentAnimation.audio.duration
-      );
+      const audio = currentAnimation.audio;
+
+      return audio === undefined ? 0 : audio.currentTime / audio.duration;
     } else {
       return this.currentFrame / currentAnimation.animationFramesCount;
     }
   }
 
   public setProgress(progress: number): void {
-    if (this.currentAnimation instanceof MusicAnimation) {
+    if (
+      this.currentAnimation instanceof MusicAnimation &&
+      this.currentAnimation.audio !== undefined
+    ) {
       const duration = this.currentAnimation.audio.duration;
       this.currentAnimation.audio.currentTime = duration * progress;
     }
@@ -124,6 +127,7 @@ export class IciclesPlayer {
       if (animations.length === 0) {
         throw new Error("At least one animation is required.");
       }
+      this._animations.forEach((animation) => animation.dispose());
       this._animations.length = 0;
       this._animations.push(...animations);
     } else if (this._animations.length === 0) {
@@ -131,7 +135,7 @@ export class IciclesPlayer {
     }
 
     this._isPlaying = true;
-    this.onPlayNext(this._animations[0]);
+    this.setupAnimation(0);
     this._play();
   };
 
@@ -145,20 +149,26 @@ export class IciclesPlayer {
     this._stats.begin();
     const { value: view, done } = this._player.next();
     this._stats.end();
+
     if (done) {
       this.onAnimationEnd();
-      return;
+    } else {
+      this.onNewView(view);
     }
 
-    this.onNewView(view);
-
+    this._clearTimeout();
     /// schedule next frame
     this._timeout = setTimeout(this._play, view.frame.duration);
   };
 
-  protected onPlayNext(animation: Animation): void {
+  protected setupAnimation(currentAnimationIndex: number): void {
+    this._currentAnimationIndex = currentAnimationIndex;
     this._currentFrame = 0;
+    const animation = this.animations[this._currentAnimationIndex];
     this._currentAnimation = animation;
+    if (animation instanceof MusicAnimation) {
+      animation.load();
+    }
     this._player = this._currentAnimation.play();
   }
 
@@ -170,10 +180,17 @@ export class IciclesPlayer {
   };
 
   protected onAnimationEnd = () => {
-    this._clearTimeout();
-    this._isPlaying = false;
-    /// TODO: Add next animation support
-    this.stop();
+    console.log("END");
+    // stop if loop is disabled
+    // this.stop();
+
+    this.currentAnimation?.dispose();
+
+    let index = this._currentAnimationIndex;
+    if (++index >= this.animations.length) {
+      index = 0;
+    }
+    this.setupAnimation(index);
   };
 
   private _clearTimeout = () => {
