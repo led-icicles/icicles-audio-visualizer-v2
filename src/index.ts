@@ -17,6 +17,7 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     // fullscreen: true,
     // alwaysOnTop: true,
+    kiosk: false,
     height: 700,
     minHeight: 700,
     minWidth: 1280,
@@ -56,7 +57,7 @@ app.on("activate", () => {
   }
 });
 
-const iciclePort = new IciclesPort("COM3");
+const iciclePort = new IciclesPort("/dev/tty.usbserial-0001");
 const transmit = async (animationViewBytes: Uint8Array) => {
   await iciclePort.send(animationViewBytes);
 };
