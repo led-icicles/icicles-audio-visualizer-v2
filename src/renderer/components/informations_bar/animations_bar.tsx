@@ -153,7 +153,11 @@ export const AnimationsBar = (props: AnimationsBarProps) => {
       player.animations.map((animation, index) => {
         return (
           <AnimationTile
-            onClick={() => player.playAnimationAt(index)}
+            onClick={async () => {
+              player.playAnimationAt(index);
+              const ports = (window as any).native.getSerialPorts();
+              console.log("PORTS", ports);
+            }}
             key={animation.header.name}
             animation={animation}
             active={player.currentAnimation === animation}
