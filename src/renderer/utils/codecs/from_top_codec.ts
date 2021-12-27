@@ -70,8 +70,8 @@ export class FromTopCodec extends Codec {
       for (let y = 0; y < lightsCount; y++) {
         const ledIndex = this.icicles.getPixelIndex(x, y);
         frame.pixels[ledIndex] = Color.linearBlend(
-          new Color(255, 0, 0),
-          new Color(0, 0, 255),
+          this.panelDisabledColor,
+          this.panelEnabledColor,
           level
         );
       }

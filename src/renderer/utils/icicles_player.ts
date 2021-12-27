@@ -2,6 +2,7 @@ import {
   Animation,
   AnimationView,
   Color,
+  Colors,
   RadioPanelView,
   VisualFrame,
 } from "icicles-animation";
@@ -10,6 +11,7 @@ import { MusicAnimation } from "./music_animation";
 import Stats from "stats-js";
 import { FromTopCodec } from "./codecs/from_top_codec";
 import { WaveCodec } from "./codecs/wave_codec";
+import { AudioLevelCodec } from "./codecs/audio_level_codec";
 
 type UpdateCallback = (currentFrame: number) => void;
 
@@ -192,7 +194,12 @@ export class IciclesPlayer {
     this._currentAnimation = animation;
     if (animation instanceof MusicAnimation) {
       animation.load();
-      animation.setCodec(new WaveCodec(animation));
+      animation.setCodec(
+        new FromTopCodec(animation, {
+          panelEnabledColor: Colors.orange,
+          panelDisabledColor: Colors.violet,
+        })
+      );
     }
     this._player = this._currentAnimation.play();
     this._clearTimeout();

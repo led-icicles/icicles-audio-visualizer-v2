@@ -71,8 +71,8 @@ export class WaveCodec extends Codec {
         const color = this.rows[x][y];
         const ledIndex = this.icicles.getPixelIndex(x, y);
         frame.pixels[ledIndex] = Color.linearBlend(
-          new Color(0, 0, 0),
-          new Color(255, 0, 0),
+          this.panelDisabledColor,
+          this.panelEnabledColor,
           color
         );
       }
