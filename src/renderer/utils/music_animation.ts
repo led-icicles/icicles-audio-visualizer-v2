@@ -2,12 +2,11 @@ import {
   Animation,
   AnimationView,
   Color,
-  Colors,
-  Duration,
   Icicles,
   RadioPanelView,
   VisualFrame,
 } from "icicles-animation";
+import { Codec } from "./codec";
 
 export class MusicAnimation extends Animation {
   constructor(public readonly file: File) {
@@ -50,7 +49,7 @@ export class MusicAnimation extends Animation {
     this.audioAnalyser = this.context.createAnalyser();
     this.mediaSource.connect(this.audioAnalyser);
     this.audioAnalyser.fftSize = 256;
-    this.audioAnalyser.smoothingTimeConstant = 0.35;
+    this.audioAnalyser.smoothingTimeConstant = this._audioSmoothingTimeConstant;
 
     this.basAnalyser = this.context.createAnalyser();
     this.mediaSource.connect(this.basAnalyser);
@@ -59,6 +58,16 @@ export class MusicAnimation extends Animation {
     this.basAnalyser.minDecibels = this.config.minDecibels;
     this.basAnalyser.maxDecibels = this.config.maxDecibels;
     this.basAnalyser.fftSize = this.config.fftSize;
+  }
+
+  private _audioSmoothingTimeConstant: number = 0.35;
+  private _codec?: Codec;
+  public setCodec(codec: Codec) {
+    this._codec = codec;
+    this._audioSmoothingTimeConstant = codec.smoothingTimeConstant;
+    if (this.audioAnalyser !== undefined) {
+      this.audioAnalyser.smoothingTimeConstant = codec.smoothingTimeConstant;
+    }
   }
 
   public unload(): void {
@@ -145,10 +154,6 @@ export class MusicAnimation extends Animation {
     return newArr;
   };
 
-  protected val = 0;
-  protected color = Colors.white;
-  protected darker = Color.linearBlend(new Color(), this.color, 0.1);
-
   public *play(): Generator<AnimationView, AnimationView, AnimationView> {
     const intialFrame: VisualFrame = VisualFrame.filled(
       this.header.pixelsCount,
@@ -196,67 +201,56 @@ export class MusicAnimation extends Animation {
 
     while (!this.audio!.ended) {
       this.basAnalyser!.getByteFrequencyData(basBins);
+      const spectrum = this.transform(basBins);
+      let baseLevel = Math.pow(this.multiplier(spectrum), 0.8);
       this.audioAnalyser!.getByteFrequencyData(audioBins);
 
-      const spectrum = this.transform(basBins.slice(0));
-      let mult = Math.pow(this.multiplier(spectrum), 0.8);
-      if (mult > 0.7) {
-        this.val = 1.0;
-      } else if (this.val > 0) {
-        this.val -= 0.25;
+      // const levels = new Array(this.header.xCount);
+      // const binsPerLevel = Math.floor(
+      //   audioBins.length / (this.header.xCount * 2)
+      // );
+      // for (let levelIndex = 0; levelIndex < this.header.xCount; levelIndex++) {
+      //   const start = levelIndex * binsPerLevel;
+      //   const end = start + binsPerLevel;
+
+      //   let sum = 0;
+      //   for (let binIndex = start; binIndex < end; binIndex++) {
+      //     sum += audioBins[binIndex];
+      //   }
+      //   const avg = sum / binsPerLevel;
+      //   const level = avg / 255;
+      //   levels[levelIndex] = level;
+      // }
+      // this.icicles.setAllPixelsColor(new Color());
+
+      // rows.unshift(levels.slice(0));
+      // rows.pop();
+
+      // const frame = this.icicles.toFrame(
+      //   new Duration({
+      //     milliseconds: this._frameDuration,
+      //   })
+      // );
+
+      // for (let x = 0; x < this.header.xCount; x++) {
+      //   for (let y = 0; y < this.header.yCount; y++) {
+      //     const color = rows[y][x];
+      //     const ledIndex = this.icicles.getPixelIndex(x, y);
+      //     frame.pixels[ledIndex] = Color.linearBlend(
+      //       new Color(0, 0, 0),
+      //       new Color(0, 0, 255),
+      //       color
+      //     );
+      //   }
+      // }
+
+      const codec = this._codec;
+      if (codec == null) {
+        yield new AnimationView(intialFrame, radioPanels);
+        continue;
+      } else {
+        yield codec.animate(audioBins, baseLevel);
       }
-
-      if (this.val < 0) {
-        this.val = 0;
-      }
-
-      const colorToDisplay = Color.linearBlend(
-        this.darker,
-        this.color,
-        this.val
-      );
-
-      const updatedRadioPanels = radioPanels.map((p) =>
-        p.copyWith({ color: colorToDisplay })
-      );
-
-      const levels = new Array(this.header.xCount);
-      const binsPerLevel = Math.floor(
-        audioBins.length / (this.header.xCount * 2)
-      );
-      for (let levelIndex = 0; levelIndex < this.header.xCount; levelIndex++) {
-        const start = levelIndex * binsPerLevel;
-        const end = start + binsPerLevel;
-
-        let sum = 0;
-        for (let binIndex = start; binIndex < end; binIndex++) {
-          sum += audioBins[binIndex];
-        }
-        const avg = sum / binsPerLevel;
-        const level = avg / 255;
-        levels[levelIndex] = level;
-      }
-
-      this.icicles.setAllPixelsColor(new Color());
-      const frame = this.icicles.toFrame(
-        new Duration({ milliseconds: this._frameDuration })
-      );
-      const half = Math.floor(this.header.xCount / 2);
-      for (let x = 0; x < this.header.xCount; x++) {
-        const level = x < half ? levels[half - 1 - x] : levels[x - half];
-        const lightsCount = level * this.header.yCount;
-
-        for (let y = 0; y < lightsCount; y++) {
-          const ledIndex = this.icicles.getPixelIndex(x, y);
-          frame.pixels[ledIndex] = Color.linearBlend(
-            new Color(255, 0, 0),
-            new Color(0, 0, 255),
-            level
-          );
-        }
-      }
-
-      yield new AnimationView(frame, updatedRadioPanels);
     }
 
     this.unload();

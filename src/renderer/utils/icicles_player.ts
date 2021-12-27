@@ -8,6 +8,8 @@ import {
 import { MusicAnimation } from "./music_animation";
 // @ts-ignore
 import Stats from "stats-js";
+import { FromTopCodec } from "./codecs/from_top_codec";
+import { WaveCodec } from "./codecs/wave_codec";
 
 type UpdateCallback = (currentFrame: number) => void;
 
@@ -190,6 +192,7 @@ export class IciclesPlayer {
     this._currentAnimation = animation;
     if (animation instanceof MusicAnimation) {
       animation.load();
+      animation.setCodec(new WaveCodec(animation));
     }
     this._player = this._currentAnimation.play();
     this._clearTimeout();
