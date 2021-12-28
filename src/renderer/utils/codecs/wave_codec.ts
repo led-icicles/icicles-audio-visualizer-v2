@@ -17,7 +17,6 @@ export class WaveCodec extends Codec {
   public get smoothingTimeConstant(): number {
     return 0;
   }
-  public static readonly minFrameDuration = new Duration({ milliseconds: 20 });
 
   protected readonly panelEnabledColor: Color;
   protected readonly panelDisabledColor: Color;

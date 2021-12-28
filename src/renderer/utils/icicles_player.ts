@@ -196,10 +196,10 @@ export class IciclesPlayer {
       animation.load();
       animation.setCodec(
         new FromTopCodec(animation, {
-          panelEnabledColor: Colors.lawnGreen,
+          panelEnabledColor: Colors.lightBlue,
           panelDisabledColor: Color.linearBlend(
             Colors.black,
-            Colors.lawnGreen,
+            Colors.red,
             0.01
           ),
         })

@@ -58,7 +58,9 @@ app.on("activate", () => {
   }
 });
 
-const iciclePort = new IciclesPort("/dev/tty.usbserial-0001");
+const iciclePort = new IciclesPort("/dev/tty.usbserial-0001", {
+  // onData: console.log,
+});
 const transmit = async (animationViewBytes: Uint8Array) => {
   await iciclePort.send(animationViewBytes);
 };
