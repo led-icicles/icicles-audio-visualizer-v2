@@ -32,12 +32,12 @@ export class FromTopCodec extends Codec {
   }
 
   public animate(audioBins: Uint8Array, baseLevel: number): AnimationView {
-    const baseValue = this.baseLevelTransformer.transform(baseLevel);
+    const transformedBaseLevel = this.baseLevelTransformer.transform(baseLevel);
 
     const radioPanelColor = Color.linearBlend(
       this.panelDisabledColor,
       this.panelEnabledColor,
-      baseValue
+      transformedBaseLevel
     );
     const updatedRadioPanels = this.radioPanels.map((panel) =>
       panel.copyWith({ color: radioPanelColor })

@@ -196,8 +196,12 @@ export class IciclesPlayer {
       animation.load();
       animation.setCodec(
         new FromTopCodec(animation, {
-          panelEnabledColor: Colors.orange,
-          panelDisabledColor: Colors.violet,
+          panelEnabledColor: Colors.lawnGreen,
+          panelDisabledColor: Color.linearBlend(
+            Colors.black,
+            Colors.lawnGreen,
+            0.01
+          ),
         })
       );
     }
@@ -210,6 +214,7 @@ export class IciclesPlayer {
     this._currentFrame++;
     this._notifyListeners();
     this._view = view;
+    console.log("NEW VIEW");
     (window as any).native.send("displayView", view.toBytes());
   };
 

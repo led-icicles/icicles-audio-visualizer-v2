@@ -5,7 +5,7 @@ export class BaseLevelTransformer {
   }
 
   public transform(level: number): number {
-    if (level > 0.7) {
+    if (level > 0.8) {
       this._value = 1.0;
     } else if (this._value > 0) {
       this._value -= 0.25;
