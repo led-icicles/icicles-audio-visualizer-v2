@@ -8,7 +8,7 @@ import {
 } from "icicles-animation";
 
 export abstract class Codec {
-  public static readonly minFrameDuration = new Duration({ milliseconds: 20 });
+  public static readonly minFrameDuration = new Duration({ milliseconds: 28 });
 
   public abstract get smoothingTimeConstant(): number;
   protected readonly icicles: Icicles;

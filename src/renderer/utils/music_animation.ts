@@ -33,7 +33,7 @@ export class MusicAnimation extends Animation {
     return this.file.size;
   }
 
-  private _frameDuration: number = 20;
+  private _frameDuration: number = 30;
 
   get animationFramesCount(): number {
     return Math.floor(this.duration / this._frameDuration);

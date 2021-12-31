@@ -197,15 +197,12 @@ export class IciclesPlayer {
       animation.setCodec(
         new FromTopCodec(animation, {
           panelEnabledColor: Colors.lightBlue,
-          panelDisabledColor: Color.linearBlend(
-            Colors.black,
-            Colors.red,
-            0.01
-          ),
+          panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
         })
       );
     }
     this._player = this._currentAnimation.play();
+    console.log(this._player.next());
     this._clearTimeout();
     this._play();
   }
@@ -214,12 +211,12 @@ export class IciclesPlayer {
     this._currentFrame++;
     this._notifyListeners();
     this._view = view;
-    console.log("NEW VIEW");
+    console.log("[Player] New view.");
     (window as any).native.send("displayView", view.toBytes());
   };
 
   protected onAnimationEnd = () => {
-    console.log("END");
+    console.log("[Player] End.");
     // stop if loop is disabled
     // this.stop();
 
