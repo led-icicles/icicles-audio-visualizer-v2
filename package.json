@@ -1,14 +1,16 @@
 {
-  "name": "icicles-electron-v2",
-  "productName": "icicles-electron-v2",
-  "version": "1.0.0",
+  "name": "icicles-visualizer",
+  "productName": "icicles-visualizer",
+  "version": "0.2.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "make-snap": "electron-forge make --arch arm64 --targets @electron-forge/maker-snap",
+    "make-snap-arm": "electron-forge make --arch arm64 --targets @electron-forge/maker-snap",
+    "make-snap": "electron-forge make --targets @electron-forge/maker-snap",
+    "make-dmg": "electron-forge make --targets @electron-forge/maker-dmg",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
@@ -20,7 +22,9 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "assets/icicles-app.icns"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -35,7 +39,7 @@
           ]
         },
         {
-          "name": "@electron-forge/maker-deb",
+          "name": "@electron-forge/maker-dmg",
           "config": {}
         },
         {
@@ -46,11 +50,11 @@
           "name": "@electron-forge/maker-snap",
           "config": {
             "features": {
+              "audio": true,
               "alsa": true,
-              "mpris": "com.example.mpris",
               "webgl": true
             },
-            "summary": "Pretty Awesome"
+            "summary": "OK 123"
           }
         }
       ],
@@ -81,10 +85,11 @@
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.61",
     "@electron-forge/maker-deb": "^6.0.0-beta.61",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.61",
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
+    "@electron-forge/maker-snap": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "@electron-forge/maker-snap": "^6.0.0-beta.61",
     "@electron-forge/plugin-webpack": "6.0.0-beta.61",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",

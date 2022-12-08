@@ -6,7 +6,7 @@ import { Animation } from "icicles-animation";
 import { MusicAnimation } from "../../utils/music_animation";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { FiMusic, FiFileText} from "react-icons/fi";
+import { FiMusic, FiFileText } from "react-icons/fi";
 import { usePlayer } from "../../window";
 
 const Container = styled.div`
@@ -64,7 +64,9 @@ const Tile = styled.div`
 const IconContainer = styled.div`
   color: #808080;
   width: 20px;
+  min-width: 20px;
   height: 20px;
+  min-height: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -81,8 +83,8 @@ const TextContainer = styled.div`
 
 const AnimationTileContainer = styled.div`
   width: calc(100% - 8px);
-  height: 30px;
-  padding: 0px 4px;
+  min-height: 30px;
+  padding: 4px 4px;
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -151,14 +153,18 @@ export const AnimationsBar = (props: AnimationsBarProps) => {
       player.animations.map((animation, index) => {
         return (
           <AnimationTile
-            onClick={() => player.playAnimationAt(index)}
+            onClick={async () => {
+              player.playAnimationAt(index);
+              const ports = (window as any).native.getSerialPorts();
+              console.log("PORTS", ports);
+            }}
             key={animation.header.name}
             animation={animation}
             active={player.currentAnimation === animation}
           />
         );
       }),
-    [player.currentAnimationIndex, player.animations.length]
+    [player.currentAnimationIndex, player.animations.map((a) => a.header.name)]
   );
 
   return (

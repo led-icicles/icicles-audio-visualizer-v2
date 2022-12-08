@@ -2,12 +2,16 @@ import {
   Animation,
   AnimationView,
   Color,
+  Colors,
   RadioPanelView,
   VisualFrame,
 } from "icicles-animation";
 import { MusicAnimation } from "./music_animation";
 // @ts-ignore
 import Stats from "stats-js";
+import { FromTopCodec } from "./codecs/from_top_codec";
+import { WaveCodec } from "./codecs/wave_codec";
+import { AudioLevelCodec } from "./codecs/audio_level_codec";
 
 type UpdateCallback = (currentFrame: number) => void;
 
@@ -190,8 +194,15 @@ export class IciclesPlayer {
     this._currentAnimation = animation;
     if (animation instanceof MusicAnimation) {
       animation.load();
+      animation.setCodec(
+        new FromTopCodec(animation, {
+          panelEnabledColor: Colors.lightBlue,
+          panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
+        })
+      );
     }
     this._player = this._currentAnimation.play();
+    console.log(this._player.next());
     this._clearTimeout();
     this._play();
   }
@@ -200,11 +211,12 @@ export class IciclesPlayer {
     this._currentFrame++;
     this._notifyListeners();
     this._view = view;
+    console.log("[Player] New view.");
     (window as any).native.send("displayView", view.toBytes());
   };
 
   protected onAnimationEnd = () => {
-    console.log("END");
+    console.log("[Player] End.");
     // stop if loop is disabled
     // this.stop();
 
