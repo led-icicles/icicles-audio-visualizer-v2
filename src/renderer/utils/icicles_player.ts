@@ -196,10 +196,16 @@ export class IciclesPlayer {
       animation.load();
       animation.setCodec(
         new FromTopCodec(animation, {
-          panelEnabledColor: Colors.lightBlue,
+          panelEnabledColor: Colors.red,
           panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
         })
       );
+      // animation.setCodec(
+      //   new WaveCodec(animation, {
+      //     panelEnabledColor: Colors.lightBlue,
+      //     panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
+      //   })
+      // );
     }
     this._player = this._currentAnimation.play();
     console.log(this._player.next());
