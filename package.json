@@ -10,6 +10,7 @@
     "make": "electron-forge make",
     "make-snap": "electron-forge make --targets @electron-forge/maker-snap",
     "make-dmg": "electron-forge make --targets @electron-forge/maker-dmg",
+    "make-dmg-arm": "electron-forge make --arch arm64 --targets @electron-forge/maker-dmg",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
