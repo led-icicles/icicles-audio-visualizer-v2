@@ -1393,10 +1393,10 @@ anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-appdmg@^0.6.0:
-  version "0.6.2"
-  resolved "https://registry.npmjs.org/appdmg/-/appdmg-0.6.2.tgz"
-  integrity sha512-mbJyAxn2/JmDpckNpXDU4AQ/XF7fltOyrLcETZxGfYwESt0NdCjQB8L2vIxxAyZKT0R/c0aSzb9yE+P2yDh9TQ==
+appdmg@^0.6.0, appdmg@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.npmjs.org/appdmg/-/appdmg-0.6.4.tgz"
+  integrity sha512-YTilgNF0DF2DSRzGzzGDxaTMLXlhe3b3HB8RAaoJJ/VJXZbOlzIAcZ7gdPniHUVUuHjGwnS7fUMd4FvO2Rp94A==
   dependencies:
     async "^1.4.2"
     ds-store "^0.1.5"
@@ -1530,7 +1530,7 @@ astral-regex@^2.0.0:
 async@^1.4.2:
   version "1.5.2"
   resolved "https://registry.npmjs.org/async/-/async-1.5.2.tgz"
-  integrity sha1-7GphrlZIDAw8skHJVhjiCJL5Zyo=
+  integrity sha512-nSVgobk4rv61R9PUSDtYt7mPVB2olxNR5RWJcAsH676/ef11bUZwvu7+RGYrYauVdDPcO519v68wRhXQtxsV9w==
 
 async@^2.6.2:
   version "2.6.3"
@@ -2030,7 +2030,7 @@ color-convert@^2.0.1:
 color-convert@~0.5.0:
   version "0.5.3"
   resolved "https://registry.npmjs.org/color-convert/-/color-convert-0.5.3.tgz"
-  integrity sha1-vbbGnOZg+t/+CwAHzER+G59ygr0=
+  integrity sha512-RwBeO/B/vZR3dfKL1ye/vx8MHZ40ugzpyfeVG5GsiuGnrlMWe2o8wxBbLCpw9CsxV+wHuzYlCiWnybrIA0ling==
 
 color-name@~1.1.4:
   version "1.1.4"
@@ -2586,7 +2586,7 @@ dot-case@^3.0.4:
 ds-store@^0.1.5:
   version "0.1.6"
   resolved "https://registry.npmjs.org/ds-store/-/ds-store-0.1.6.tgz"
-  integrity sha1-0QJO90btDBPw9/7IXH6FjoxLfKc=
+  integrity sha512-kY21M6Lz+76OS3bnCzjdsJSF7LBpLYGCVfavW8TgQD2XkcqIZ86W0y9qUDZu6fp7SIZzqosMDW2zi7zVFfv4hw==
   dependencies:
     bplist-creator "~0.0.3"
     macos-alias "~0.2.5"
@@ -2642,6 +2642,16 @@ electron-installer-dmg@^3.0.0:
     minimist "^1.1.1"
   optionalDependencies:
     appdmg "^0.6.0"
+
+electron-installer-dmg@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/electron-installer-dmg/-/electron-installer-dmg-4.0.0.tgz"
+  integrity sha512-g3W6XnyUa7QGrAF7ViewHdt6bXV2KYU1Pm1CY3pZpp+H6mOjCHHAhf/iZAxtaX1ERCb+SQHz7xSsAHuNH9I8ZQ==
+  dependencies:
+    debug "^4.3.2"
+    minimist "^1.1.1"
+  optionalDependencies:
+    appdmg "^0.6.4"
 
 electron-installer-snap@^5.1.0:
   version "5.1.0"
@@ -3379,7 +3389,7 @@ flora-colossus@^1.0.0:
 fmix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/fmix/-/fmix-0.1.0.tgz"
-  integrity sha1-x7vxJN7ELJ0ZHPuUfQqXeN2YbAw=
+  integrity sha512-Y6hyofImk9JdzU8k5INtTXX1cu8LDlePWDFU5sftm9H+zKCr5SGrVjdhkvsim646cw5zD0nADj8oHyXMZmCZ9w==
   dependencies:
     imul "^1.0.0"
 
@@ -3597,7 +3607,7 @@ generate-function@^2.0.0:
 generate-object-property@^1.1.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/generate-object-property/-/generate-object-property-1.2.0.tgz"
-  integrity sha1-nA4cQDCM6AT0eDYYuTf6iPmdUNA=
+  integrity sha512-TuOwZWgJ2VAMEGJvAyPWvpqxSANF0LDpmyHauMjFYzaACvn+QTT/AZomvPCzVBV7yDN3OmwHQ5OvHaeLKre3JQ==
   dependencies:
     is-property "^1.0.0"
 
@@ -4127,7 +4137,7 @@ import-fresh@^3.0.0, import-fresh@^3.1.0, import-fresh@^3.2.1:
 imul@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/imul/-/imul-1.0.1.tgz"
-  integrity sha1-nVhnFh6LPelsLDjV3HyxAvNeKsk=
+  integrity sha512-WFAgfwPLAjU66EKt6vRdTlKj4nAgIDQzh29JonLa4Bqtl6D8JrIMvWjCnx7xEjVNmP3U0fM5o8ZObk7d0f62bA==
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -4317,9 +4327,9 @@ is-lambda@^1.0.1:
   integrity sha1-PZh3iZ5qU+/AFgUEzeFfgubwYdU=
 
 is-my-ip-valid@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/is-my-ip-valid/-/is-my-ip-valid-1.0.0.tgz"
-  integrity sha512-gmh/eWXROncUzRnIa1Ubrt5b8ep/MGSnfAUI3aRp+sqTCs1tv1Isl8d8F6JmkN3dXKc3ehZMrtiPN9eL03NuaQ==
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/is-my-ip-valid/-/is-my-ip-valid-1.0.1.tgz"
+  integrity sha512-jxc8cBcOWbNK2i2aTkCZP6i7wkHF1bqKFrwEHuN5Jtg5BSaZHUZQ/JTOJwoV41YvHnOaRyWWh72T/KvfNz9DJg==
 
 is-my-json-valid@^2.20.0:
   version "2.20.6"
@@ -4374,7 +4384,7 @@ is-plain-object@^2.0.4:
 is-property@^1.0.0, is-property@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/is-property/-/is-property-1.0.2.tgz"
-  integrity sha1-V/4cTkhHTt1lsJkR8msc1Ald2oQ=
+  integrity sha512-Ks/IoX00TtClbGQr4TWXemAnktAQvYB7HzcCxDGqEZU6oCmb2INHuOoKxbtR+HFkmYWBKv/dOZtGRiAjDhj92g==
 
 is-regex@^1.0.4, is-regex@^1.1.4:
   version "1.1.4"
@@ -4592,9 +4602,9 @@ jsonfile@^6.0.1:
     graceful-fs "^4.1.6"
 
 jsonpointer@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/jsonpointer/-/jsonpointer-5.0.0.tgz"
-  integrity sha512-PNYZIdMjVIvVgDSYKTT63Y+KZ6IZvGRNNWcxwD+GNnUz1MKPfv30J8ueCjdwcN0nDx2SlshgyB7Oy0epAzVRRg==
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/jsonpointer/-/jsonpointer-5.0.1.tgz"
+  integrity sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==
 
 jsprim@^1.2.2:
   version "1.4.2"
@@ -4804,7 +4814,7 @@ lzma-native@^8.0.1:
 macos-alias@~0.2.5:
   version "0.2.11"
   resolved "https://registry.npmjs.org/macos-alias/-/macos-alias-0.2.11.tgz"
-  integrity sha1-/u6mwTuhGYFKQ/xDxHCzHlnvcYo=
+  integrity sha512-zIUs3+qpml+w3wiRuADutd7XIO8UABqksot10Utl/tji4UxZzLG4fWDC+yJZoO8/Ehg5RqsvSRE/6TS5AEOeWw==
   dependencies:
     nan "^2.4.0"
 
@@ -5535,7 +5545,7 @@ parse-author@^2.0.0:
 parse-color@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/parse-color/-/parse-color-1.0.0.tgz"
-  integrity sha1-e3SLlag/A/FqlPU15S1/PZRlhhk=
+  integrity sha512-fuDHYgFHJGbpGMgw9skY/bj3HL/Jrn4l/5rSspy00DoT4RyLnDcRvPxdZ+r6OFwIsgAuhDh4I09tAId4mI12bw==
   dependencies:
     color-convert "~0.5.0"
 
@@ -6219,7 +6229,7 @@ renderkid@^3.0.0:
 repeat-string@^1.5.4:
   version "1.6.1"
   resolved "https://registry.npmjs.org/repeat-string/-/repeat-string-1.6.1.tgz"
-  integrity sha1-jcrkcOHIirwtYA//Sndihtp15jc=
+  integrity sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w==
 
 repeating@^2.0.0:
   version "2.0.1"
@@ -6822,7 +6832,7 @@ stats-js@^1.0.1:
 stream-buffers@~2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/stream-buffers/-/stream-buffers-2.2.0.tgz"
-  integrity sha1-kdX1Ew0c75bc+n9yaUUYh0HQnuQ=
+  integrity sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg==
 
 string_decoder@^1.1.1:
   version "1.3.0"
@@ -7161,7 +7171,7 @@ tmp@0.1.0:
 tn1150@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/tn1150/-/tn1150-0.1.0.tgz"
-  integrity sha1-ZzUD0k1WuH3ouMd/7j/AhT1ZoY0=
+  integrity sha512-DbplOfQFkqG5IHcDyyrs/lkvSr3mPUVsFf/RbDppOshs22yTPnSJWEe6FkYd1txAwU/zcnR905ar2fi4kwF29w==
   dependencies:
     unorm "^1.4.1"
 

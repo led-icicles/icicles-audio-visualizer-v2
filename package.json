@@ -51,6 +51,7 @@
             "features": {
               "audio": true,
               "alsa": true,
+              "mpris": "com.example.mpris",
               "webgl": true
             },
             "summary": "OK 123"
@@ -101,6 +102,7 @@
     "buffer": "^6.0.3",
     "css-loader": "^6.0.0",
     "electron": "16.0.5",
+    "electron-installer-dmg": "^4.0.0",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.20.0",
     "file-loader": "^6.2.0",
