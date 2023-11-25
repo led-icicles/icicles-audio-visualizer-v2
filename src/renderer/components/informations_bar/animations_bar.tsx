@@ -10,7 +10,7 @@ import { FiMusic, FiFileText } from "react-icons/fi";
 import { usePlayer } from "../../window";
 
 const Container = styled.div`
-  height: calc(100vh - 60px);
+  height: 100%;
   width: 280px;
   display: flex;
   flex-direction: column;

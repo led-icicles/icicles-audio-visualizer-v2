@@ -7,7 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { usePlayer } from "../../window";
 
 const Container = styled.div`
-  height: calc(100vh - 60px);
+  height: 100%;
   width: calc(250px - 8px);
   padding: 0 4px;
   display: flex;

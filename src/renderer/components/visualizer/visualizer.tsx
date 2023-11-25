@@ -44,7 +44,7 @@ export const Visualizer = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const LEFT_PANEL_WIDTH = 280 + 250;
-  const BOTTOM_PANEL_HEIGHT = 60;
+  const BOTTOM_PANEL_HEIGHT = 60 + 300;
 
   const updateSceneSize = useCallback(() => {
     if (!targetRef.current) return;

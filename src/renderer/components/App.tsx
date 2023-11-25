@@ -1,4 +1,9 @@
 import React, { useCallback, useContext } from "react";
+import {
+  Timeline,
+  TimelineEffect,
+  TimelineRow,
+} from "@xzdarcy/react-timeline-editor";
 import styled from "styled-components";
 import { MusicAnimation } from "../utils/music_animation";
 import { DataBar } from "./data_bar/data_bar";
@@ -7,6 +12,7 @@ import { Visualizer } from "./visualizer/visualizer";
 import { Animation } from "icicles-animation";
 import { AnimationsBar } from "./informations_bar/animations_bar";
 import { PlayerContext } from "../utils/player_context";
+import TimelineEditor from "./timeline_player/timeline_editor";
 
 const Container = styled.div`
   position: absolute;
@@ -43,7 +49,16 @@ export function App() {
     player.play(animations);
   }, []);
 
-  console.log("DAD");
+  const mockEffect: Record<string, TimelineEffect> = {
+    effect0: {
+      id: "effect0",
+      name: "Test1",
+    },
+    effect1: {
+      id: "effect1",
+      name: "Test2",
+    },
+  };
 
   return (
     <Container>
@@ -55,7 +70,9 @@ export function App() {
         <Visualizer />
         <InformationsBar />
       </ContentContainer>
-      <DataBar />
+        <TimelineEditor />
+      {/* <DataBar /> */}
     </Container>
   );
 }
+
