@@ -1,16 +1,16 @@
 {
   "name": "icicles-visualizer",
   "productName": "icicles-visualizer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "make-snap-arm": "electron-forge make --arch arm64 --targets @electron-forge/maker-snap",
     "make-snap": "electron-forge make --targets @electron-forge/maker-snap",
-    "make-dmg": "electron-forge make --targets @electron-forge/maker-dmg",
+    "make-dmg": "electron-forge make --arch x64 --targets @electron-forge/maker-dmg",
+    "make-dmg-arm": "electron-forge make --arch arm64 --targets @electron-forge/maker-dmg",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
@@ -103,6 +103,7 @@
     "buffer": "^6.0.3",
     "css-loader": "^6.0.0",
     "electron": "16.0.5",
+    "electron-installer-dmg": "^4.0.0",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.20.0",
     "file-loader": "^6.2.0",
@@ -123,7 +124,7 @@
     "react-dropzone": "^11.4.2",
     "react-icons": "^4.3.1",
     "react-perfect-scrollbar": "^1.5.8",
-    "serialport": "^9.2.8",
+    "serialport": "^10.5.0",
     "stats-js": "^1.0.1",
     "styled-components": "^5.3.3"
   }

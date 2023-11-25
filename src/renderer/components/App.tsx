@@ -1,9 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
-import { usePlayer } from "../window";
 import { MusicAnimation } from "../utils/music_animation";
 import { DataBar } from "./data_bar/data_bar";
-import { Dropzone } from "./dropzone/dropzone";
 import { InformationsBar } from "./informations_bar/informations_bar";
 import { Visualizer } from "./visualizer/visualizer";
 import { Animation } from "icicles-animation";

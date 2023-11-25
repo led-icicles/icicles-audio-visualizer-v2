@@ -208,9 +208,8 @@ export class IciclesPlayer {
       // );
     }
     this._player = this._currentAnimation.play();
-    console.log(this._player.next());
     this._clearTimeout();
-    this._play();
+    // this._play();
   }
 
   protected onNewView = (view: AnimationView) => {
