@@ -3,7 +3,6 @@ import {
   AnimationView,
   Color,
   Colors,
-  Duration,
 } from "icicles-animation";
 import { BaseLevelTransformer } from "../base_level_transformer";
 import { Codec } from "../codec";
@@ -39,7 +38,7 @@ export class WaveCodec extends Codec {
     const level = this.baseLevelTransformer.transform(baseLevel);
     const radioPanelColor = Color.linearBlend(
       this.panelDisabledColor,
-      this.panelEnabledColor,
+      Colors.red ?? this.panelEnabledColor,
       level
     );
     const updatedRadioPanels = this.radioPanels.map((panel) =>
@@ -62,12 +61,14 @@ export class WaveCodec extends Codec {
     this.rows.push(audioLevels);
     this.rows.shift();
 
-    this.icicles.setAllPixelsColor(new Color());
+    // this.icicles.setAllPixelsColor(new Color());
+    this.icicles.setAllPixelsColor(radioPanelColor.darken(0.5));
     const frame = this.icicles.toFrame(Codec.minFrameDuration);
 
     for (let x = 0; x < this.xCount; x++) {
       for (let y = 0; y < this.yCount; y++) {
         const color = this.rows[x][y];
+        if (color == new Color().value) continue;
         const ledIndex = this.icicles.getPixelIndex(x, y);
         frame.pixels[ledIndex] = Color.linearBlend(
           this.panelDisabledColor,

@@ -12,8 +12,8 @@ export class MusicAnimation extends Animation {
   constructor(public readonly file: File) {
     super({
       name: file.name,
-      xCount: 20,
-      yCount: 30,
+      xCount: 64,
+      yCount: 8,
       radioPanelsCount: 2,
     });
   }
@@ -33,7 +33,7 @@ export class MusicAnimation extends Animation {
     return this.file.size;
   }
 
-  private _frameDuration: number = 30;
+  private _frameDuration = 16;
 
   get animationFramesCount(): number {
     return Math.floor(this.duration / this._frameDuration);

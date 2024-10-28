@@ -7,11 +7,13 @@ import {
   VisualFrame,
 } from "icicles-animation";
 import { MusicAnimation } from "./music_animation";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Stats from "stats-js";
 import { FromTopCodec } from "./codecs/from_top_codec";
 import { WaveCodec } from "./codecs/wave_codec";
 import { AudioLevelCodec } from "./codecs/audio_level_codec";
+import { MusicWaveCodec } from "./codecs/sinus_codec";
 
 type UpdateCallback = (currentFrame: number) => void;
 
@@ -51,11 +53,11 @@ export class IciclesPlayer {
     return this._currentAnimation?.header.radioPanelsCount ?? 2;
   }
 
-  private _currentAnimationIndex: number = 0;
+  private _currentAnimationIndex = 0;
   public get currentAnimationIndex(): number {
     return this._currentAnimationIndex;
   }
-  private _currentFrame: number = 0;
+  private _currentFrame = 0;
   public get currentFrame(): number {
     return this._currentFrame;
   }
@@ -194,18 +196,24 @@ export class IciclesPlayer {
     this._currentAnimation = animation;
     if (animation instanceof MusicAnimation) {
       animation.load();
-      animation.setCodec(
-        new FromTopCodec(animation, {
-          panelEnabledColor: Colors.red,
-          panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
-        })
-      );
+      // animation.setCodec(
+      //   new FromTopCodec(animation, {
+      //     panelEnabledColor: Colors.red,
+      //     panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
+      //   })
+      // );
       // animation.setCodec(
       //   new WaveCodec(animation, {
       //     panelEnabledColor: Colors.lightBlue,
       //     panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
       //   })
       // );
+      animation.setCodec(
+        new MusicWaveCodec(animation, {
+          panelEnabledColor: Colors.lightBlue,
+          panelDisabledColor: Color.linearBlend(Colors.black, Colors.red, 0.01),
+        })
+      );
     }
     this._player = this._currentAnimation.play();
     this._clearTimeout();
