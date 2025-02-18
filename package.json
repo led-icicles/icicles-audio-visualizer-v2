@@ -118,13 +118,14 @@
     "electron-squirrel-startup": "^1.0.0",
     "icicles-animation": "github:led-icicles/icicles-animation-js",
     "icicles-serial": "github:led-icicles/icicles-serial",
+    "node-gyp": "^11.1.0",
     "pixi.js": "^6.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
     "react-icons": "^4.3.1",
     "react-perfect-scrollbar": "^1.5.8",
-    "serialport": "^10.5.0",
+    "serialport": "^12.0.0",
     "stats-js": "^1.0.1",
     "styled-components": "^5.3.3"
   }

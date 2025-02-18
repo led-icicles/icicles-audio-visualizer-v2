@@ -58,7 +58,7 @@ app.on("activate", () => {
   }
 });
 
-const iciclePort = new IciclesPort("/dev/cu.usbmodem1101", {
+const iciclePort = new IciclesPort("/dev/cu.usbmodem101", {
   onData: console.log,
    baudRate: 921600,
 });
